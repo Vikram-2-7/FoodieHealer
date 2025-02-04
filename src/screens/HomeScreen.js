@@ -7,9 +7,12 @@ import Button from '../components/Button';
 const HomeScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Header title="My App" />
-            <Text style={styles.title}>Welcome to My App!</Text>
+            <Header title="Food Manager" />
+            <Text style={styles.title}>Welcome to Food Manager!</Text>
             <Button title="Get Started" onPress={() => navigation.navigate('ExerciseRecommendations')} />
+            <Button title="View Meal Suggestions" onPress={() => navigation.navigate('MealSuggestions')} />
+            <Button title="Log a Meal" onPress={() => navigation.navigate('MealLog')} />
+            <Button title="Community Challenges" onPress={() => navigation.navigate('Community')} />
         </View>
     );
 };
