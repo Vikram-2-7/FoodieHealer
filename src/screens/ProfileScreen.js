@@ -1,12 +1,18 @@
-// src/screens/ProfileScreen.js
+// src/screens/ProgressScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
+import ProgressChart from '../components/ProgressChart';
 
-const ProfileScreen = () => {
+const ProgressScreen = () => {
+    const data = {
+        labels: ['Week 1', 'Week 2', 'Week 3'], // Example labels
+        values: [60, 55, 50], // Example weight values or other metrics
+    };
+
     return (
         <View style={styles.container}>
-            <Text>Profile Screen</Text>
-            {/* Add your content here */}
+            <Text style={styles.title}>Progress Tracking</Text>
+            <ProgressChart data={data} />
         </View>
     );
 };
@@ -14,9 +20,15 @@ const ProfileScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        paddingHorizontal: 20,
+        paddingTop: 40,
+        backgroundColor: '#F5F5F5',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 20,
     },
 });
 
-export default ProfileScreen;
+export default ProgressScreen;

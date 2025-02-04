@@ -1,13 +1,10 @@
 // App.js
 import React from 'react';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-import Navigation from './src/navigation/navigation';
+import Navigation from './src/navigation/navigation'; // Ensure this path is correct
 
 const App = () => {
     return (
-        <SafeAreaProvider>
-            <Navigation />
-        </SafeAreaProvider>
+        <Navigation />
     );
 };
 
