@@ -11,7 +11,7 @@ const DashboardScreen = ({ navigation }) => {
         <ScrollView contentContainerStyle={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.greeting}>Good Morning, John! 🌞</Text>
+                <Text style={styles.greeting}>Good Morning, Vikram! 🌞</Text>
                 <Text style={styles.motivationalQuote}>"Eat clean, train mean, live green!"</Text>
                 <View style={styles.stats}>
                     <Text style={styles.stat}>Calories Consumed: 1,200</Text>
