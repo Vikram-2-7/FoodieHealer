@@ -1,17 +1,45 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { PieChart } from 'react-native-chart-   kit';
-import { Dimensions } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions, Animated } from 'react-native';
+import { PieChart } from 'react-native-chart-kit';
 import { colors } from '../styles/colors';
 
 const screenWidth = Dimensions.get('window').width;
 
-const DashboardScreen = ({ navigation }) => {
+// Helper Function: Get Greeting Based on Time of Day
+const getGreeting = (username) => {
+    const hour = new Date().getHours();
+    if (hour < 12) {
+        return `Good Morning, ${username}! 🌞`;
+    } else if (hour < 18) {
+        return `Good Afternoon, ${username}! 🌤️`;
+    } else {
+        return `Good Evening, ${username}! 🌙`;
+    }
+};
+
+const DashboardScreen = ({ navigation, route }) => {
+    // Retrieve username from route parameters or default to "Guest"
+    const { username } = route.params || { username: 'Guest' };
+
+    // Animation for greeting text
+    const fadeAnim = new Animated.Value(0);
+
+    React.useEffect(() => {
+        Animated.timing(fadeAnim, {
+            toValue: 1,
+            duration: 1500,
+            useNativeDriver: true,
+        }).start();
+    }, [fadeAnim]);
+
     return (
         <ScrollView contentContainerStyle={styles.container}>
             {/* Header */}
             <View style={styles.header}>
-                <Text style={styles.greeting}>Good Morning, Vikram! 🌞</Text>
+                {/* Animated Greeting */}
+                <Animated.Text style={[styles.greeting, { opacity: fadeAnim }]}>
+                    {getGreeting(username)}
+                </Animated.Text>
                 <Text style={styles.motivationalQuote}>"Eat clean, train mean, live green!"</Text>
                 <View style={styles.stats}>
                     <Text style={styles.stat}>Calories Consumed: 1,200</Text>
@@ -21,20 +49,20 @@ const DashboardScreen = ({ navigation }) => {
 
             {/* Quick Actions */}
             <View style={styles.quickActions}>
-                <TouchableOpacity 
-                    style={[styles.actionButton, { backgroundColor: colors.peach }]} 
+                <TouchableOpacity
+                    style={[styles.actionButton, { backgroundColor: colors.peach }]}
                     onPress={() => navigation.navigate('AddMeal')}
                 >
                     <Text style={styles.actionText}>Log a Healthy Meal</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
-                    style={[styles.actionButton, { backgroundColor: colors.babyPink }]} 
+                <TouchableOpacity
+                    style={[styles.actionButton, { backgroundColor: colors.babyPink }]}
                     onPress={() => navigation.navigate('TrackWorkout')}
                 >
                     <Text style={styles.actionText}>Start Workout</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
-                    style={[styles.actionButton, { backgroundColor: colors.darkPurple }]} 
+                <TouchableOpacity
+                    style={[styles.actionButton, { backgroundColor: colors.darkPurple }]}
                     onPress={() => navigation.navigate('NutritionGoals')}
                 >
                     <Text style={styles.actionText}>View Nutritional Goals</Text>
@@ -99,7 +127,7 @@ const DashboardScreen = ({ navigation }) => {
                 <PieChart
                     data={[
                         { name: 'Consumed', population: 1200, color: colors.peach, legendFontColor: colors.darkPurple, legendFontSize: 15 },
-                        { name: 'Remaining', population: 800, color: colors.lightPurple, legendFontColor: colors.darkPurple, legendFontSize: 15 },
+                        { name: 'Remaining', population: 800, color: colors.babyPink, legendFontColor: colors.darkPurple, legendFontSize: 15 },
                     ]}
                     width={screenWidth - 40}
                     height={220}
@@ -117,18 +145,18 @@ const DashboardScreen = ({ navigation }) => {
                 />
             </View>
 
-            {/* Additional Content for Testing Scroll */}
+            {/* Community Challenges */}
             <View style={styles.section}>
                 <Text style={styles.sectionTitle}>Community Challenges</Text>
-                <TouchableOpacity style={styles.challengeCard}>
+                <View style={styles.challengeCard}>
                     <Text style={styles.challengeText}>Challenge 1: 10,000 Steps a Day</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.challengeCard}>
+                </View>
+                <View style={styles.challengeCard}>
                     <Text style={styles.challengeText}>Challenge 2: Drink 2 Liters of Water</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.challengeCard}>
+                </View>
+                <View style={styles.challengeCard}>
                     <Text style={styles.challengeText}>Challenge 3: No Junk Food for a Week</Text>
-                </TouchableOpacity>
+                </View>
             </View>
         </ScrollView>
     );
@@ -144,15 +172,17 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     greeting: {
-        fontSize: 24,
+        fontSize: 28,
         fontWeight: 'bold',
         color: colors.darkPurple,
+        textAlign: 'center',
     },
     motivationalQuote: {
         fontSize: 16,
         color: colors.darkPurple,
         fontStyle: 'italic',
         marginTop: 5,
+        textAlign: 'center',
     },
     stats: {
         flexDirection: 'row',
