@@ -1,29 +1,17 @@
-// src/screens/RegisterScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
 
 const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    const handleRegister = async () => {
-        if (email && password && confirmPassword) {
-            if (password === confirmPassword) {
-                // Save user credentials to AsyncStorage
-                try {
-                    await AsyncStorage.setItem('userCredentials', JSON.stringify({ email, password }));
-                    console.log('User registered:', { email, password });
-                    navigation.navigate('Dashboard'); // Navigate to Dashboard on successful registration
-                } catch (error) {
-                    console.error('Error saving data', error);
-                }
-                setErrorMessage(''); // Clear error message on successful registration
-            } else {
-                setErrorMessage("Passwords don't match.");
-            }
+    const handleRegister = () => {
+        // Mock registration logic (no Firebase)
+        if (email && password) {
+            console.log('User registered successfully');
+            // Navigate to Dashboard Screen instead of Login
+            navigation.navigate('Dashboard', { email }); // Pass email as a parameter
         } else {
             setErrorMessage('Please fill in all fields.');
         }
@@ -31,7 +19,7 @@ const RegisterScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Create an Account</Text>
+            <Text style={styles.title}>Register</Text>
             {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
             <TextInput
                 placeholder="Email"
@@ -46,14 +34,10 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setPassword}
                 value={password}
             />
-            <TextInput
-                placeholder="Confirm Password"
-                secureTextEntry
-                style={styles.input}
-                onChangeText={setConfirmPassword}
-                value={confirmPassword}
-            />
             <Button title="Register" onPress={handleRegister} />
+            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.login}>Already have an account? Login</Text>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -61,23 +45,31 @@ const RegisterScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#6A5ACD', // Purple theme color
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#E6E6FA', // Light Purple
         padding: 20,
     },
     title: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: '#fff',
+        color: '#6A5ACD', // Dark Purple
         marginBottom: 20,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#fff',
+        borderColor: '#6A5ACD', // Dark Purple
         borderRadius: 10,
         paddingHorizontal: 10,
         marginBottom: 15,
         height: 50,
-        backgroundColor: '#fff',
+        width: '80%',
+        backgroundColor: '#FFFFFF', // White
+    },
+    login: {
+        color: '#6A5ACD', // Dark Purple
+        marginTop: 15,
+        textAlign: 'center',
     },
     error: {
         color: 'red',
