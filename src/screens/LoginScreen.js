@@ -1,46 +1,23 @@
-// src/screens/LoginScreen.js
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity, ScrollView } from 'react-native';
 
 const LoginScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
 
-    useEffect(() => {
-        // Check if user credentials are already stored
-        const checkCredentials = async () => {
-            const savedCredentials = await AsyncStorage.getItem('userCredentials');
-            if (savedCredentials) {
-                const { email, password } = JSON.parse(savedCredentials);
-                setEmail(email);
-                setPassword(password);
-            }
-        };
-        checkCredentials();
-    }, []);
-
-    const handleLogin = async () => {
-        const savedCredentials = await AsyncStorage.getItem('userCredentials');
-        
-        if (savedCredentials) {
-            const { email: savedEmail, password: savedPassword } = JSON.parse(savedCredentials);
-            
-            if (email === savedEmail && password === savedPassword) {
-                console.log('Logged in successfully:', { email });
-                navigation.navigate('Dashboard'); // Navigate to Dashboard on successful login
-                setErrorMessage(''); // Clear error message on successful login
-            } else {
-                setErrorMessage('Invalid email or password.');
-            }
+    const handleLogin = () => {
+        // Mock login logic (no Firebase)
+        if (email === "test@example.com" && password === "password") {
+            console.log('User logged in successfully');
+            navigation.navigate('Dashboard'); // Navigate to Dashboard Screen
         } else {
-            setErrorMessage('No user found. Please register first.');
+            setErrorMessage('Invalid email or password');
         }
     };
 
     return (
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
             <Text style={styles.title}>Welcome Back!</Text>
             {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
             <TextInput
@@ -63,43 +40,43 @@ const LoginScreen = ({ navigation }) => {
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.register}>Don't have an account? Register</Text>
             </TouchableOpacity>
-        </View>
+        </ScrollView>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#6A5ACD', // Purple theme color
+        flexGrow: 1,
+        backgroundColor: '#E6E6FA', // Light Purple
         padding: 20,
     },
     title: {
         fontSize: 30,
         fontWeight: 'bold',
-        color: '#fff',
+        color: '#6A5ACD', // Dark Purple
         marginBottom: 20,
     },
     input: {
         borderWidth: 1,
-        borderColor: '#fff',
+        borderColor: '#6A5ACD', // Dark Purple
         borderRadius: 10,
         paddingHorizontal: 10,
         marginBottom: 15,
         height: 50,
-        backgroundColor: '#fff',
+        backgroundColor: '#FFFFFF', // White
     },
     forgot: {
-        color: '#fff',
+        color: '#6A5ACD', // Dark Purple
         marginBottom: 20,
     },
     register: {
-        color: '#fff',
+        color: '#6A5ACD', // Dark Purple
         marginTop: 15,
         textAlign: 'center',
     },
     error: {
-       color:'red' ,
-   }
+        color: 'red',
+    },
 });
 
 export default LoginScreen;

@@ -69,14 +69,14 @@ const styles = StyleSheet.create({
     },
     input: {
         borderWidth: 1,
-        borderColor: '#32CD32', // Fitness-related green color
+        borderColor: '#6A5ACD', // Fitness-related green color
         borderRadius: 10,
         paddingHorizontal: 10,
         marginBottom: 15,
         height: 50,
     },
     mealItem: {
-        backgroundColor: '#32CD32', // Fitness-related green color
+        backgroundColor: '#6A5ACD', // Fitness-related green color
         borderRadius: 10,
         padding: 15,
         marginVertical: 5,

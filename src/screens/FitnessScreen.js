@@ -52,7 +52,7 @@ const styles = StyleSheet.create({
         width: '90%',
     },
     menuItem: {
-        backgroundColor: '#32CD32', // Fitness-related green color
+        backgroundColor: '#6A5ACD', // Fitness-related green color
         borderRadius: 10,
         padding: 15,
         marginVertical: 10,
