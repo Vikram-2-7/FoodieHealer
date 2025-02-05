@@ -1,34 +1,46 @@
-// src/components/Header.js
 import React from 'react';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { colors } from '../styles/colors';
 
+const Header = ({ username }) => {
+    const greeting = `Good Morning, ${username}! 🌞`;
 
-const Header = ({ title }) => {
     return (
         <View style={styles.header}>
-            
+            <Text style={styles.greeting}>{greeting}</Text>
+            <Text style={styles.motivationalQuote}>"Eat clean, train mean, live green!"</Text>
+            <View style={styles.stats}>
+                <Text style={styles.stat}>Calories Consumed: 1,200</Text>
+                <Text style={styles.stat}>Target: 2,000</Text>
+            </View>
         </View>
     );
 };
 
 const styles = StyleSheet.create({
     header: {
-        backgroundColor: colors.primary,
-        paddingVertical: 20,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: 10,
+        padding: 20,
+        backgroundColor: colors.darkPurple,
     },
-    headerText: {
-        color: 'white',
+    greeting: {
         fontSize: 24,
         fontWeight: 'bold',
+        color: colors.white,
     },
-    icon: {
-        width: 20,
-        height: 20,
+    motivationalQuote: {
+        fontSize: 16,
+        color: colors.white,
+        fontStyle: 'italic',
+        marginTop: 5,
+    },
+    stats: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginTop: 10,
+    },
+    stat: {
+        fontSize: 16,
+        color: colors.white,
     },
 });
 

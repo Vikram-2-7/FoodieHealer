@@ -4,14 +4,15 @@ import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from 'rea
 const RegisterScreen = ({ navigation }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [username, setUsername] = useState(''); // New state for username
     const [errorMessage, setErrorMessage] = useState('');
 
     const handleRegister = () => {
         // Mock registration logic (no Firebase)
-        if (email && password) {
+        if (email && password && username) {
             console.log('User registered successfully');
-            // Navigate to Dashboard Screen instead of Login
-            navigation.navigate('Dashboard', { email }); // Pass email as a parameter
+            // Navigate to Dashboard Screen and pass username as a parameter
+            navigation.navigate('Dashboard', { username }); // Pass username
         } else {
             setErrorMessage('Please fill in all fields.');
         }
@@ -21,12 +22,24 @@ const RegisterScreen = ({ navigation }) => {
         <View style={styles.container}>
             <Text style={styles.title}>Register</Text>
             {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+
+            {/* Username Input */}
+            <TextInput
+                placeholder="Username"
+                style={styles.input}
+                onChangeText={setUsername}
+                value={username}
+            />
+
+            {/* Email Input */}
             <TextInput
                 placeholder="Email"
                 style={styles.input}
                 onChangeText={setEmail}
                 value={email}
             />
+
+            {/* Password Input */}
             <TextInput
                 placeholder="Password"
                 secureTextEntry
@@ -34,7 +47,11 @@ const RegisterScreen = ({ navigation }) => {
                 onChangeText={setPassword}
                 value={password}
             />
+
+            {/* Register Button */}
             <Button title="Register" onPress={handleRegister} />
+
+            {/* Login Link */}
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                 <Text style={styles.login}>Already have an account? Login</Text>
             </TouchableOpacity>
