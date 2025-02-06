@@ -1,5 +1,9 @@
 // src/screens/PersonalizedDietPlannerScreen.js
 import React, { useState } from 'react';
+
+import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { colors } from '../styles/colors';
+
 import {
   View,
   Text,
@@ -9,30 +13,26 @@ import {
   StyleSheet,
 } from 'react-native';
 
+
 const PersonalizedDietPlannerScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [filteredFoods, setFilteredFoods] = useState([]);
-  const [cart, setCart] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [foodResults, setFoodResults] = useState([]);
 
-  // Mock food data
-  const foodData = [
-    { id: '1', name: 'Grilled Chicken', type: 'Non-Veg', calories: 300 },
-    { id: '2', name: 'Vegan Salad', type: 'Vegan', calories: 150 },
-    { id: '3', name: 'Gluten-Free Pasta', type: 'Veg', calories: 400 },
-  ];
-
-  // Search functionality
-  const handleSearch = () => {
-    const filtered = foodData.filter((item) =>
-      item.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredFoods(filtered);
-  };
-
-  // Add to cart functionality
-  const addToCart = (item) => {
-    setCart([...cart, item]);
-    alert(`${item.name} added to cart!`);
+  // Fetch food data from Spoonacular API
+  const searchFood = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://api.spoonacular.com/recipes/complexSearch?query=${searchQuery}&apiKey=fec79e9cebf9472f876a33907996cc70`
+      );
+      const data = await response.json();
+      setFoodResults(data.results || []);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -47,10 +47,15 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
-      <TouchableOpacity onPress={handleSearch} style={styles.searchButton}>
+      <TouchableOpacity onPress={searchFood} style={styles.searchButton}>
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
+
+      {/* Loading Indicator */}
+      {loading && <ActivityIndicator size="large" color={colors.babyPink} />}
+
+      {/* Food Results */}
       {/* Filters */}
       <View style={styles.filters}>
         <TouchableOpacity style={styles.filterButton}>
@@ -65,10 +70,19 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
       </View>
 
       {/* Food Suggestions */}
+
       <FlatList
-        data={filteredFoods.length > 0 ? filteredFoods : foodData}
-        keyExtractor={(item) => item.id}
+        data={foodResults}
+        keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
+
+          <TouchableOpacity style={styles.foodItem}>
+            <Text style={styles.foodName}>{item.title}</Text>
+            <Text style={styles.foodDetails}>Calories: {item.calories || 'N/A'}</Text>
+          </TouchableOpacity>
+        )}
+      />
+
           <TouchableOpacity
             style={styles.foodItem}
             onPress={() => navigation.navigate('FoodDetails', { item })}
@@ -91,6 +105,7 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
       >
         <Text style={styles.cartButtonText}>View Cart ({cart.length})</Text>
       </TouchableOpacity>
+
     </View>
   );
 };
@@ -99,32 +114,36 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: colors.lightPurple,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
+    marginBottom: 20,
+    color: colors.darkPurple,
   },
   searchBar: {
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: colors.darkPurple,
     borderRadius: 8,
     padding: 10,
     marginBottom: 10,
+    backgroundColor: colors.white,
   },
   searchButton: {
-    backgroundColor: '#FF6347',
+    backgroundColor: colors.babyPink,
     padding: 10,
     borderRadius: 8,
     alignItems: 'center',
     marginBottom: 20,
   },
   searchButtonText: {
-    color: '#fff',
+    color: colors.white,
     fontWeight: 'bold',
   },
+
+
   filters: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -138,13 +157,16 @@ const styles = StyleSheet.create({
   filterText: {
     fontWeight: 'bold',
   },
+
   foodItem: {
     padding: 15,
     borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
+    borderBottomColor: colors.darkPurple,
   },
   foodName: {
     fontSize: 18,
+
+
     fontWeight: 'bold',
   },
   foodDetails: {
@@ -154,20 +176,14 @@ const styles = StyleSheet.create({
   },
   addToCart: {
     color: '#FF6347',
+
     fontWeight: 'bold',
-    textAlign: 'right',
+    color: colors.darkPurple,
+  },
+  foodDetails: {
+    fontSize: 14,
+    color: colors.darkPurple,
     marginTop: 5,
-  },
-  cartButton: {
-    backgroundColor: '#4CAF50',
-    padding: 15,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  cartButtonText: {
-    color: '#fff',
-    fontWeight: 'bold',
   },
 });
 

@@ -1,96 +1,90 @@
+// src/screens/RegisterScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity } from 'react-native';
+import {
+  View,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity, // Add this import
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [username, setUsername] = useState(''); // New state for username
-    const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const handleRegister = () => {
-        // Mock registration logic (no Firebase)
-        if (email && password && username) {
-            console.log('User registered successfully');
-            // Navigate to Dashboard Screen and pass username as a parameter
-            navigation.navigate('Dashboard', { username }); // Pass username
-        } else {
-            setErrorMessage('Please fill in all fields.');
-        }
-    };
+  const handleRegister = async () => {
+    // Simulate registration validation
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill out all required fields!');
+      return;
+    }
 
-    return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Register</Text>
-            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
+    // Simulate saving user data to the backend/database
+    console.log('User Registered:', { email, password });
 
-            {/* Username Input */}
-            <TextInput
-                placeholder="Username"
-                style={styles.input}
-                onChangeText={setUsername}
-                value={username}
-            />
+    // Save login status to AsyncStorage
+    await AsyncStorage.setItem('isLoggedIn', 'true');
 
-            {/* Email Input */}
-            <TextInput
-                placeholder="Email"
-                style={styles.input}
-                onChangeText={setEmail}
-                value={email}
-            />
+    // Navigate to the Main App Tabs
+    navigation.navigate('MainApp');
+  };
 
-            {/* Password Input */}
-            <TextInput
-                placeholder="Password"
-                secureTextEntry
-                style={styles.input}
-                onChangeText={setPassword}
-                value={password}
-            />
-
-            {/* Register Button */}
-            <Button title="Register" onPress={handleRegister} />
-
-            {/* Login Link */}
-            <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.login}>Already have an account? Login</Text>
-            </TouchableOpacity>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Register</Text>
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+      />
+      <Button title="Register" onPress={handleRegister} color="#6A1B9A" />
+      <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.link}>Already have an account? Login here</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#E6E6FA', // Light Purple
-        padding: 20,
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: '#6A5ACD', // Dark Purple
-        marginBottom: 20,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#6A5ACD', // Dark Purple
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        marginBottom: 15,
-        height: 50,
-        width: '80%',
-        backgroundColor: '#FFFFFF', // White
-    },
-    login: {
-        color: '#6A5ACD', // Dark Purple
-        marginTop: 15,
-        textAlign: 'center',
-    },
-    error: {
-        color: 'red',
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3E5F5',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#6A1B9A',
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    borderColor: '#6A1B9A',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#FFFFFF',
+  },
+  link: {
+    marginTop: 15,
+    color: '#6A1B9A',
+    textDecorationLine: 'underline',
+  },
 });
 
 export default RegisterScreen;
