@@ -27,6 +27,7 @@ const getGreeting = (username) => {
 };
 
 const DashboardScreen = ({ navigation, route }) => {
+  // Retrieve username from route parameters or default to "Guest"
   const { username } = route.params || { username: 'Guest' };
 
   // Animation for greeting text
