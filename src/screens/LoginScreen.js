@@ -7,7 +7,7 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableOpacity, // Add this import
+  TouchableOpacity,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -16,13 +16,9 @@ const LoginScreen = ({ navigation }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
-    // Simulate login validation
     if (email === 'user@example.com' && password === 'password') {
-      // Save login status to AsyncStorage
       await AsyncStorage.setItem('isLoggedIn', 'true');
-
-      // Navigate to the Main App Tabs
-      navigation.navigate('MainApp');
+      navigation.navigate('UserInfo'); // Navigate to user info page
     } else {
       Alert.alert('Error', 'Invalid email or password');
     }

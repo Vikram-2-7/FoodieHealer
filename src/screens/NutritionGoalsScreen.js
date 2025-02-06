@@ -1,12 +1,12 @@
-// src/screens/TrackWorkoutScreen.js
+// src/screens/NutritionGoalsScreen.js
 import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { colors } from '../styles/colors';
 
-const TrackWorkoutScreen = () => {
+const NutritionGoalsScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Track Your Workout</Text>
+      <Text style={styles.title}>Your Nutrition Goals</Text>
     </View>
   );
 };
@@ -25,4 +25,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TrackWorkoutScreen;
+export default NutritionGoalsScreen;

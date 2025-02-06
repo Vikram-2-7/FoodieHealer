@@ -1,76 +1,48 @@
 // src/screens/UserInfoScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
-import { colors } from '../styles/colors';
+import {
+  View,
+  TextInput,
+  Button,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const UserInfoScreen = ({ navigation }) => {
-  const [formData, setFormData] = useState({
-    age: '',
-    weight: '',
-    height: '',
-    activityLevel: '',
-    goal: '',
-    preferences: '',
-  });
+  const [fitnessDetails, setFitnessDetails] = useState('');
+  const [foodPreferences, setFoodPreferences] = useState('');
+  const [dietDetails, setDietDetails] = useState('');
 
-  const handleSubmit = () => {
-    // Save formData to the backend/database
-    console.log('User Info Submitted:', formData);
-
-    // Navigate to the Dashboard
-    navigation.navigate('MainApp');
+  const handleSubmit = async () => {
+    // Save user details (you can send this data to your ML model API here)
+    await AsyncStorage.setItem('userDetails', JSON.stringify({ fitnessDetails, foodPreferences, dietDetails }));
+    navigation.navigate('MainApp'); // Navigate to the main app
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tell Us About Yourself</Text>
-
+      <Text style={styles.title}>Complete Your Profile</Text>
       <TextInput
+        placeholder="Fitness Details"
+        value={fitnessDetails}
+        onChangeText={setFitnessDetails}
         style={styles.input}
-        placeholder="Age"
-        keyboardType="numeric"
-        value={formData.age}
-        onChangeText={(text) => setFormData({ ...formData, age: text })}
       />
-
       <TextInput
+        placeholder="Food Preferences"
+        value={foodPreferences}
+        onChangeText={setFoodPreferences}
         style={styles.input}
-        placeholder="Weight (kg)"
-        keyboardType="numeric"
-        value={formData.weight}
-        onChangeText={(text) => setFormData({ ...formData, weight: text })}
       />
-
       <TextInput
+        placeholder="Diet Details"
+        value={dietDetails}
+        onChangeText={setDietDetails}
         style={styles.input}
-        placeholder="Height (cm)"
-        keyboardType="numeric"
-        value={formData.height}
-        onChangeText={(text) => setFormData({ ...formData, height: text })}
       />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Activity Level (e.g., Moderate)"
-        value={formData.activityLevel}
-        onChangeText={(text) => setFormData({ ...formData, activityLevel: text })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Goal (e.g., Weight Loss)"
-        value={formData.goal}
-        onChangeText={(text) => setFormData({ ...formData, goal: text })}
-      />
-
-      <TextInput
-        style={styles.input}
-        placeholder="Food Preferences (e.g., Vegetarian)"
-        value={formData.preferences}
-        onChangeText={(text) => setFormData({ ...formData, preferences: text })}
-      />
-
-      <Button title="Submit" onPress={handleSubmit} color={colors.babyPink} />
+      <Button title="Submit" onPress={handleSubmit} color="#6A1B9A" />
     </View>
   );
 };
@@ -78,23 +50,26 @@ const UserInfoScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
-    backgroundColor: colors.lightPurple,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3E5F5',
+    paddingHorizontal: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    textAlign: 'center',
     marginBottom: 20,
-    color: colors.darkPurple,
+    color: '#6A1B9A',
   },
   input: {
+    width: '100%',
+    height: 50,
+    borderColor: '#6A1B9A',
     borderWidth: 1,
-    borderColor: colors.darkPurple,
     borderRadius: 8,
-    padding: 10,
+    paddingHorizontal: 10,
     marginBottom: 15,
-    backgroundColor: colors.white,
+    backgroundColor: '#FFFFFF',
   },
 });
 

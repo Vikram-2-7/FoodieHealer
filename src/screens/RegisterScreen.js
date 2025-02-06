@@ -7,39 +7,44 @@ import {
   Alert,
   StyleSheet,
   Text,
-  TouchableOpacity, // Add this import
+  TouchableOpacity,
 } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     // Simulate registration validation
-    if (!email || !password) {
+    if (!email || !password || !username) {
       Alert.alert('Error', 'Please fill out all required fields!');
       return;
     }
 
-    // Simulate saving user data to the backend/database
-    console.log('User Registered:', { email, password });
+    // Simulate saving user data (e.g., to a backend or database)
+    console.log('User Registered:', { username, email, password });
 
-    // Save login status to AsyncStorage
-    await AsyncStorage.setItem('isLoggedIn', 'true');
-
-    // Navigate to the Main App Tabs
-    navigation.navigate('MainApp');
+    // Navigate to the Main App Tabs (which includes the Dashboard)
+    navigation.navigate('MainApp', { username });
   };
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Register</Text>
       <TextInput
+        placeholder="Username"
+        value={username}
+        onChangeText={setUsername}
+        style={styles.input}
+      />
+      <TextInput
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
         style={styles.input}
+        keyboardType="email-address"
+        autoCapitalize="none"
       />
       <TextInput
         placeholder="Password"
