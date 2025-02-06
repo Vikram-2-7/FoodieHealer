@@ -1,7 +1,7 @@
+// src/styles/colors.js
 export const colors = {
-    darkPurple: '#6A5ACD', // Dark Purple
-    lightPurple: '#E6E6FA', // Light Purple
-    white: '#FFFFFF', // White
-    peach: '#FFDAB9', // Peach
-    babyPink: '#FFB6C1', // Baby Pink
-};
+    lightPurple: '#F3E5F5',
+    darkPurple: '#6A1B9A',
+    babyPink: '#FF80AB',
+    white: '#FFFFFF',
+  };

@@ -1,82 +1,86 @@
+// src/screens/LoginScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Button, TouchableOpacity, ScrollView } from 'react-native';
+import {
+  View,
+  TextInput,
+  Button,
+  Alert,
+  StyleSheet,
+  Text,
+  TouchableOpacity, // Add this import
+} from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginScreen = ({ navigation }) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
-    const handleLogin = () => {
-        // Mock login logic (no Firebase)
-        if (email === "test@example.com" && password === "password") {
-            console.log('User logged in successfully');
-            navigation.navigate('Dashboard'); // Navigate to Dashboard Screen
-        } else {
-            setErrorMessage('Invalid email or password');
-        }
-    };
+  const handleLogin = async () => {
+    // Simulate login validation
+    if (email === 'user@example.com' && password === 'password') {
+      // Save login status to AsyncStorage
+      await AsyncStorage.setItem('isLoggedIn', 'true');
 
-    return (
-        <ScrollView contentContainerStyle={styles.container}>
-            <Text style={styles.title}>Welcome Back!</Text>
-            {errorMessage ? <Text style={styles.error}>{errorMessage}</Text> : null}
-            <TextInput
-                placeholder="Email"
-                style={styles.input}
-                onChangeText={setEmail}
-                value={email}
-            />
-            <TextInput
-                placeholder="Password"
-                secureTextEntry
-                style={styles.input}
-                onChangeText={setPassword}
-                value={password}
-            />
-            <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')}>
-                <Text style={styles.forgot}>Forgot Password?</Text>
-            </TouchableOpacity>
-            <Button title="Login" onPress={handleLogin} />
-            <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-                <Text style={styles.register}>Don't have an account? Register</Text>
-            </TouchableOpacity>
-        </ScrollView>
-    );
+      // Navigate to the Main App Tabs
+      navigation.navigate('MainApp');
+    } else {
+      Alert.alert('Error', 'Invalid email or password');
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Login</Text>
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Password"
+        secureTextEntry
+        value={password}
+        onChangeText={setPassword}
+        style={styles.input}
+      />
+      <Button title="Login" onPress={handleLogin} color="#6A1B9A" />
+      <TouchableOpacity onPress={() => navigation.navigate('Register')}>
+        <Text style={styles.link}>Don't have an account? Register here</Text>
+      </TouchableOpacity>
+    </View>
+  );
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flexGrow: 1,
-        backgroundColor: '#E6E6FA', // Light Purple
-        padding: 20,
-    },
-    title: {
-        fontSize: 30,
-        fontWeight: 'bold',
-        color: '#6A5ACD', // Dark Purple
-        marginBottom: 20,
-    },
-    input: {
-        borderWidth: 1,
-        borderColor: '#6A5ACD', // Dark Purple
-        borderRadius: 10,
-        paddingHorizontal: 10,
-        marginBottom: 15,
-        height: 50,
-        backgroundColor: '#FFFFFF', // White
-    },
-    forgot: {
-        color: '#6A5ACD', // Dark Purple
-        marginBottom: 20,
-    },
-    register: {
-        color: '#6A5ACD', // Dark Purple
-        marginTop: 15,
-        textAlign: 'center',
-    },
-    error: {
-        color: 'red',
-    },
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F3E5F5',
+    paddingHorizontal: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 20,
+    color: '#6A1B9A',
+  },
+  input: {
+    width: '100%',
+    height: 50,
+    borderColor: '#6A1B9A',
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingHorizontal: 10,
+    marginBottom: 15,
+    backgroundColor: '#FFFFFF',
+  },
+  link: {
+    marginTop: 15,
+    color: '#6A1B9A',
+    textDecorationLine: 'underline',
+  },
 });
 
 export default LoginScreen;
