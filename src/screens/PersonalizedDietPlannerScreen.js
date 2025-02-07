@@ -72,6 +72,7 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
             onPress={() => navigation.navigate('FoodDetails', { item })}
           >
             <Text style={styles.foodName}>{item.title}</Text>
+<<<<<<< Updated upstream
             <Text style={styles.foodDetails}>Calories: N/A</Text>
             <TouchableOpacity onPress={() => addToCart(item)}>
               <Text style={styles.addToCart}>Add to Cart</Text>
@@ -83,6 +84,11 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
             <Text style={styles.emptyMessage}>No results found. Try a different search.</Text>
           )
         }
+=======
+            <Text style={styles.foodDetails}>Calories: {item.calories || 'N/A'}</Text>
+          </TouchableOpacity>
+        )}
+>>>>>>> Stashed changes
       />
 
       {/* View Cart Button */}
@@ -153,6 +159,7 @@ const styles = StyleSheet.create({
   foodDetails: {
     fontSize: 14,
     color: colors.darkPurple,
+<<<<<<< Updated upstream
     marginTop: 5,
   },
   addToCart: {
@@ -165,6 +172,10 @@ const styles = StyleSheet.create({
     color: colors.darkPurple,
     marginTop: 20,
   },
+=======
+    marginTop: 5,
+  },
+>>>>>>> Stashed changes
   cartButton: {
     backgroundColor: colors.babyPink,
     padding: 15,
@@ -175,7 +186,10 @@ const styles = StyleSheet.create({
   cartButtonText: {
     color: colors.white,
     fontWeight: 'bold',
+<<<<<<< Updated upstream
     fontSize: 16,
+=======
+>>>>>>> Stashed changes
   },
 });
 
