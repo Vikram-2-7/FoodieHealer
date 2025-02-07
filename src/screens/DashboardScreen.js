@@ -1,5 +1,4 @@
-// src/screens/DashboardScreen.js
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -7,199 +6,221 @@ import {
   TouchableOpacity,
   ScrollView,
   Dimensions,
-  Animated,
 } from 'react-native';
-import { PieChart } from 'react-native-chart-kit';
-import { colors } from '../styles/colors';
+import { Ionicons } from '@expo/vector-icons';
 
-const screenWidth = Dimensions.get('window').width;
-
-// Helper Function: Get Greeting Based on Time of Day
-const getGreeting = (username) => {
-  const hour = new Date().getHours();
-  if (hour < 12) {
-    return `Good Morning, ${username}! 🌞`;
-  } else if (hour < 18) {
-    return `Good Afternoon, ${username}! 🌤️`;
-  } else {
-    return `Good Evening, ${username}! 🌙`;
-  }
-};
+const { width } = Dimensions.get('window');
+const buttonWidth = (width - 45) / 3; // 3 buttons per row with gaps
 
 const DashboardScreen = ({ navigation, route }) => {
-  // Retrieve username from route parameters or default to "Guest"
-  const { username } = route.params || { username: 'Guest' };
-
-  // Animation for greeting text
-  const fadeAnim = new Animated.Value(0);
-  useEffect(() => {
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 1500,
-      useNativeDriver: true,
-    }).start();
-  }, [fadeAnim]);
+  const userName = route.params?.userName || 'User';
 
   return (
     <ScrollView style={styles.container}>
-      {/* Header */}
-      <Animated.Text style={[styles.greeting, { opacity: fadeAnim }]}>
-        {getGreeting(username)}
-      </Animated.Text>
-      <Text style={styles.motivationalQuote}>Eat clean, train mean, live green!</Text>
+      {/* Header Card */}
+      <View style={styles.headerCard}>
+        <Text style={styles.greeting}>Good Evening, {userName}!</Text>
+        <Text style={styles.motto}>"Eat clean, train mean, live green!"</Text>
+      </View>
 
-      {/* Quick Actions */}
-      <View style={styles.quickActions}>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: colors.babyPink }]}
-          onPress={() => navigation.navigate('AddMeal')}
+      {/* Calories Card */}
+      <View style={styles.caloriesCard}>
+        <Text style={styles.caloriesTitle}>Daily Progress</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progress, { width: '60%' }]} />
+        </View>
+        <View style={styles.caloriesInfo}>
+          <Text style={styles.caloriesText}>1,200 consumed</Text>
+          <Text style={styles.caloriesText}>Target: 2,000</Text>
+        </View>
+      </View>
+
+      {/* Action Buttons */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity 
+          style={[styles.actionButton, { backgroundColor: '#7C4DFF' }]}
+          onPress={() => navigation.navigate('LogMeal')}
         >
-          <Text style={styles.actionText}>Log a Healthy Meal</Text>
+          <Ionicons name="restaurant" size={24} color="#FFF" />
+          <Text style={styles.buttonText}>Log Meal</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: colors.darkPurple }]}
-          onPress={() => navigation.navigate('TrackWorkout')}
+
+        <TouchableOpacity 
+          style={[styles.actionButton, { backgroundColor: '#FF5252' }]}
+          onPress={() => navigation.navigate('StartWorkout')}
         >
-          <Text style={styles.actionText}>Start Workout</Text>
+          <Ionicons name="fitness" size={24} color="#FFF" />
+          <Text style={styles.buttonText}>Workout</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: colors.babyPink }]}
-          onPress={() => navigation.navigate('NutritionGoals')}
+
+        <TouchableOpacity 
+          style={[styles.actionButton, { backgroundColor: '#FF9800' }]}
+          onPress={() => navigation.navigate('NutritionalGoals')}
         >
-          <Text style={styles.actionText}>View Nutritional Goals</Text>
+          <Ionicons name="trophy" size={24} color="#FFF" />
+          <Text style={styles.buttonText}>Goals</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.actionButton, { backgroundColor: '#4CAF50' }]}
+          onPress={() => navigation.navigate('Diet Planner')}
+        >
+          <Ionicons name="calendar" size={24} color="#FFF" />
+          <Text style={styles.buttonText}>Planner</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.actionButton, { backgroundColor: '#2196F3' }]}
+          onPress={() => navigation.navigate('Progress')}
+        >
+          <Ionicons name="trending-up" size={24} color="#FFF" />
+          <Text style={styles.buttonText}>Progress</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity 
+          style={[styles.actionButton, { backgroundColor: '#E91E63' }]}
+          onPress={() => navigation.navigate('Community')}
+        >
+          <Ionicons name="people" size={24} color="#FFF" />
+          <Text style={styles.buttonText}>Community</Text>
         </TouchableOpacity>
       </View>
 
-      {/* Food Section */}
-      <Text style={styles.sectionTitle}>Today's Meals</Text>
-      <View style={styles.mealCards}>
-        <TouchableOpacity
-          style={styles.mealCard}
-          onPress={() => navigation.navigate('MealLog')}
-        >
-          <Text style={styles.mealText}>Breakfast: Oatmeal</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.mealCard}
-          onPress={() => navigation.navigate('MealLog')}
-        >
-          <Text style={styles.mealText}>Lunch: Salad</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.mealCard}
-          onPress={() => navigation.navigate('MealLog')}
-        >
-          <Text style={styles.mealText}>Dinner: Grilled Chicken</Text>
-        </TouchableOpacity>
+      {/* Today's Meals */}
+      <View style={styles.mealsSection}>
+        <Text style={styles.sectionTitle}>Today's Meals</Text>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          <View style={styles.mealCard}>
+            <Ionicons name="sunny" size={24} color="#FF9800" />
+            <Text style={styles.mealType}>Breakfast</Text>
+            <Text style={styles.mealName}>Oatmeal</Text>
+          </View>
+
+          <View style={styles.mealCard}>
+            <Ionicons name="partly-sunny" size={24} color="#2196F3" />
+            <Text style={styles.mealType}>Lunch</Text>
+            <Text style={styles.mealName}>Salad</Text>
+          </View>
+
+          <View style={styles.mealCard}>
+            <Ionicons name="moon" size={24} color="#7C4DFF" />
+            <Text style={styles.mealType}>Dinner</Text>
+            <Text style={styles.mealName}>Grilled Chicken</Text>
+          </View>
+        </ScrollView>
       </View>
-
-      {/* Nutritional Breakdown Chart */}
-      <Text style={styles.sectionTitle}>Nutritional Breakdown</Text>
-      <PieChart
-        data={[
-          { name: 'Protein', population: 40, color: '#FF6384', legendFontColor: '#7F7F7F' },
-          { name: 'Carbs', population: 30, color: '#36A2EB', legendFontColor: '#7F7F7F' },
-          { name: 'Fats', population: 30, color: '#FFCE56', legendFontColor: '#7F7F7F' },
-        ]}
-        width={screenWidth - 40}
-        height={220}
-        chartConfig={{
-          backgroundColor: '#ffffff',
-          backgroundGradientFrom: '#ffffff',
-          backgroundGradientTo: '#ffffff',
-          decimalPlaces: 0,
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        }}
-        accessor="population"
-        backgroundColor="transparent"
-        paddingLeft="15"
-        absolute
-      />
-
-      {/* Progress Chart */}
-      <Text style={styles.sectionTitle}>Calories Consumed vs Target</Text>
-      <PieChart
-        data={[
-          { name: 'Consumed', population: 1200, color: '#FF6384', legendFontColor: '#7F7F7F' },
-          { name: 'Remaining', population: 800, color: '#36A2EB', legendFontColor: '#7F7F7F' },
-        ]}
-        width={screenWidth - 40}
-        height={220}
-        chartConfig={{
-          backgroundColor: '#ffffff',
-          backgroundGradientFrom: '#ffffff',
-          backgroundGradientTo: '#ffffff',
-          decimalPlaces: 0,
-          color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-          labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
-        }}
-        accessor="population"
-        backgroundColor="transparent"
-        paddingLeft="15"
-        absolute
-      />
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flexGrow: 1,
+    flex: 1,
+    backgroundColor: '#F5F5F5',
+  },
+  headerCard: {
+    margin: 15,
     padding: 20,
-    backgroundColor: colors.lightPurple,
+    borderRadius: 15,
+    backgroundColor: '#FF6B6B',
+    elevation: 3,
   },
   greeting: {
-    fontSize: 28,
+    fontSize: 24,
+    color: '#FFF',
     fontWeight: 'bold',
-    color: colors.darkPurple,
-    textAlign: 'center',
   },
-  motivationalQuote: {
-    fontSize: 16,
-    color: colors.darkPurple,
+  motto: {
+    color: '#FFF',
+    fontSize: 14,
+    marginTop: 5,
     fontStyle: 'italic',
+  },
+  caloriesCard: {
+    backgroundColor: '#FFF',
+    margin: 15,
+    padding: 15,
+    borderRadius: 15,
+    elevation: 2,
+  },
+  caloriesTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 10,
+  },
+  progressBar: {
+    height: 8,
+    backgroundColor: '#E0E0E0',
+    borderRadius: 4,
+    overflow: 'hidden',
+  },
+  progress: {
+    height: '100%',
+    backgroundColor: '#7C4DFF',
+    borderRadius: 4,
+  },
+  caloriesInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  caloriesText: {
+    fontSize: 12,
+    color: '#666',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    padding: 15,
+    gap: 7.5,
+    justifyContent: 'center',
+  },
+  actionButton: {
+    width: buttonWidth,
+    height: 80,
+    borderRadius: 12,
+    padding: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 2,
+    marginBottom: 7.5,
+  },
+  buttonText: {
+    color: '#FFF',
+    fontSize: 12,
+    fontWeight: 'bold',
     marginTop: 5,
     textAlign: 'center',
   },
-  quickActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginBottom: 20,
-  },
-  actionButton: {
-    flex: 1,
-    marginHorizontal: 5,
+  mealsSection: {
     padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-  },
-  actionText: {
-    color: colors.white,
-    fontWeight: 'bold',
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    marginBottom: 10,
-    color: colors.darkPurple,
-  },
-  mealCards: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    color: '#333',
+    marginBottom: 15,
   },
   mealCard: {
-    backgroundColor: colors.white,
+    backgroundColor: '#FFF',
     padding: 15,
-    borderRadius: 10,
-    flex: 1,
-    marginHorizontal: 5,
+    borderRadius: 12,
+    marginRight: 10,
+    width: 100,
     alignItems: 'center',
+    elevation: 2,
   },
-  mealText: {
-    fontSize: 16,
+  mealType: {
+    fontSize: 14,
     fontWeight: 'bold',
-    color: colors.darkPurple,
+    color: '#333',
+    marginTop: 5,
+  },
+  mealName: {
+    fontSize: 12,
+    color: '#666',
+    marginTop: 3,
   },
 });
 

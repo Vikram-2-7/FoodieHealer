@@ -1,18 +1,7 @@
 // src/screens/PersonalizedDietPlannerScreen.js
 import React, { useState } from 'react';
-
 import { View, Text, TextInput, FlatList, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
 import { colors } from '../styles/colors';
-
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  TouchableOpacity,
-  StyleSheet,
-} from 'react-native';
-
 
 const PersonalizedDietPlannerScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -21,15 +10,21 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
 
   // Fetch food data from Spoonacular API
   const searchFood = async () => {
+    if (!searchQuery.trim()) {
+      Alert.alert('Error', 'Please enter a search query');
+      return;
+    }
+
     setLoading(true);
     try {
       const response = await fetch(
-        `https://api.spoonacular.com/recipes/complexSearch?query=${searchQuery}&apiKey=fec79e9cebf9472f876a33907996cc70`
+        `https://api.spoonacular.com/recipes/complexSearch?query=${encodeURIComponent(searchQuery)}&apiKey=fec79e9cebf9472f876a33907996cc70`
       );
       const data = await response.json();
       setFoodResults(data.results || []);
     } catch (error) {
       console.error('Error fetching data:', error);
+      Alert.alert('Error', 'Failed to fetch food data. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -51,11 +46,9 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
         <Text style={styles.searchButtonText}>Search</Text>
       </TouchableOpacity>
 
-
       {/* Loading Indicator */}
       {loading && <ActivityIndicator size="large" color={colors.babyPink} />}
 
-      {/* Food Results */}
       {/* Filters */}
       <View style={styles.filters}>
         <TouchableOpacity style={styles.filterButton}>
@@ -69,43 +62,36 @@ const PersonalizedDietPlannerScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
 
-      {/* Food Suggestions */}
-
+      {/* Food Results */}
       <FlatList
         data={foodResults}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
-
-          <TouchableOpacity style={styles.foodItem}>
-            <Text style={styles.foodName}>{item.title}</Text>
-            <Text style={styles.foodDetails}>Calories: {item.calories || 'N/A'}</Text>
-          </TouchableOpacity>
-        )}
-      />
-
           <TouchableOpacity
             style={styles.foodItem}
             onPress={() => navigation.navigate('FoodDetails', { item })}
           >
-            <Text style={styles.foodName}>{item.name}</Text>
-            <Text style={styles.foodDetails}>
-              {item.type} | {item.calories} Calories
-            </Text>
+            <Text style={styles.foodName}>{item.title}</Text>
+            <Text style={styles.foodDetails}>Calories: N/A</Text>
             <TouchableOpacity onPress={() => addToCart(item)}>
               <Text style={styles.addToCart}>Add to Cart</Text>
             </TouchableOpacity>
           </TouchableOpacity>
         )}
+        ListEmptyComponent={
+          !loading && (
+            <Text style={styles.emptyMessage}>No results found. Try a different search.</Text>
+          )
+        }
       />
 
       {/* View Cart Button */}
       <TouchableOpacity
-        onPress={() => navigation.navigate('Cart', { cart })}
+        onPress={() => navigation.navigate('Cart')}
         style={styles.cartButton}
       >
-        <Text style={styles.cartButtonText}>View Cart ({cart.length})</Text>
+        <Text style={styles.cartButtonText}>View Cart</Text>
       </TouchableOpacity>
-
     </View>
   );
 };
@@ -142,8 +128,6 @@ const styles = StyleSheet.create({
     color: colors.white,
     fontWeight: 'bold',
   },
-
-
   filters: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -157,7 +141,6 @@ const styles = StyleSheet.create({
   filterText: {
     fontWeight: 'bold',
   },
-
   foodItem: {
     padding: 15,
     borderBottomWidth: 1,
@@ -165,25 +148,34 @@ const styles = StyleSheet.create({
   },
   foodName: {
     fontSize: 18,
-
-
     fontWeight: 'bold',
   },
   foodDetails: {
     fontSize: 14,
-    color: '#666',
+    color: colors.darkPurple,
     marginTop: 5,
   },
   addToCart: {
     color: '#FF6347',
-
     fontWeight: 'bold',
-    color: colors.darkPurple,
-  },
-  foodDetails: {
-    fontSize: 14,
-    color: colors.darkPurple,
     marginTop: 5,
+  },
+  emptyMessage: {
+    textAlign: 'center',
+    color: colors.darkPurple,
+    marginTop: 20,
+  },
+  cartButton: {
+    backgroundColor: colors.babyPink,
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  cartButtonText: {
+    color: colors.white,
+    fontWeight: 'bold',
+    fontSize: 16,
   },
 });
 
