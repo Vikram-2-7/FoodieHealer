@@ -9,7 +9,7 @@ export const mockFoodData = {
       protein: 12,
       carbs: 35,
       fat: 18,
-      image: 'https://images.unsplash.com/photo-1588137378633-dea2e31e4186',
+      image: 'https://images.unsplash.com/photo-1541519227354-08fa5d50c44d',
       price: 12.99,
       description: 'Sourdough bread topped with mashed avocado, poached eggs, and chili flakes',
       ingredients: ['Sourdough bread', 'Avocado', 'Eggs', 'Chili flakes'],

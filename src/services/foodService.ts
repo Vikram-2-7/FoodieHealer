@@ -44,7 +44,10 @@ class FoodService {
         items = await foodApiService.getFoodItemsByCategory(params.category);
       } else {
         // Fallback to mock data for initial load
-        items = mockFoodData.items;
+        items = mockFoodData.items.map(item => ({
+          ...item,
+          category: item.category as FoodItem['category'] // Cast string category to union type
+        }));
       }
 
       return {
@@ -56,7 +59,10 @@ class FoodService {
       console.error('Food service error:', error);
       // Fallback to mock data if API fails
       return {
-        items: mockFoodData.items,
+        items: mockFoodData.items.map(item => ({
+          ...item,
+          category: item.category as FoodItem['category'] // Cast string category to union type
+        })),
         totalCount: mockFoodData.items.length,
         hasMore: false
       };
@@ -70,7 +76,10 @@ class FoodService {
     } catch (error) {
       console.error('Search failed:', error);
       // Fallback to local search in mock data
-      return mockFoodData.items.filter(item =>
+      return mockFoodData.items.map(item => ({
+        ...item,
+        category: item.category as FoodItem['category'] // Cast string category to union type
+      })).filter(item =>
         item.name.toLowerCase().includes(query.toLowerCase()) ||
         item.description.toLowerCase().includes(query.toLowerCase())
       );

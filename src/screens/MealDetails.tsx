@@ -11,7 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../styles/theme';
 import { NavigationProps } from '../types/navigation';
 
-const MealDetails = ({ route, navigation }) => {
+const MealDetails = ({ route, navigation }: NavigationProps) => {
   const { meal } = route.params;
 
   return (
