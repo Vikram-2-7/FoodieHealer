@@ -1,86 +1,95 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
   StyleSheet,
+  TouchableOpacity,
+  TextInput,
   Platform,
-  Alert,
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { COLORS, GRADIENTS, SHADOWS } from '../styles/theme';
-import { NavigationProps } from '../types/navigation';
+import { COLORS, GRADIENTS } from '../styles/theme';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-interface LoginScreenProps {
-  navigation: NavigationProps;
-}
-
-const LoginScreen: React.FC<LoginScreenProps> = ({ navigation }) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
-      return;
-    }
-    // Navigate to MainApp (which contains the Dashboard)
-    navigation.navigate('MainApp');
-  };
+export const LoginScreen: React.FC<{ navigation: any }> = ({ navigation }) => {
+  const [email, setEmail] = React.useState('');
+  const [password, setPassword] = React.useState('');
 
   return (
     <View style={styles.container}>
-      <LinearGradient
-        colors={GRADIENTS.primary as [string, string]}
-        style={styles.gradientContainer}
-      >
-        <View style={styles.formContainer}>
-          <Text style={styles.title}>Welcome Back</Text>
-          <Text style={styles.subtitle}>Sign in to continue</Text>
+      {/* Back Button Header */}
+      <View style={styles.headerContainer}>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <MaterialCommunityIcons 
+            name="arrow-left" 
+            size={24} 
+            color="#FFD700"
+          />
+        </TouchableOpacity>
+      </View>
 
+      <LinearGradient
+        colors={['rgba(0, 0, 0, 0.95)', 'rgba(25, 25, 25, 0.97)']}
+        style={styles.gradient}
+      >
+        <View style={styles.header}>
+          <Text style={styles.title}>FoodieHealer</Text>
+          <Text style={styles.subtitle}>Your Personal Nutrition Guide</Text>
+        </View>
+
+        <View style={styles.form}>
           <View style={styles.inputContainer}>
+            <MaterialCommunityIcons 
+              name="email" 
+              size={24} 
+              color="rgba(255, 215, 0, 0.6)" 
+            />
             <TextInput
               style={styles.input}
               placeholder="Email"
-              placeholderTextColor={COLORS.textSecondary}
+              placeholderTextColor="rgba(255, 215, 0, 0.4)"
               value={email}
               onChangeText={setEmail}
-              keyboardType="email-address"
               autoCapitalize="none"
             />
           </View>
 
           <View style={styles.inputContainer}>
+            <MaterialCommunityIcons 
+              name="lock" 
+              size={24} 
+              color="rgba(255, 215, 0, 0.6)" 
+            />
             <TextInput
               style={styles.input}
               placeholder="Password"
-              placeholderTextColor={COLORS.textSecondary}
+              placeholderTextColor="rgba(255, 215, 0, 0.4)"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
           </View>
 
-          <TouchableOpacity
+          <TouchableOpacity 
             style={styles.loginButton}
-            onPress={handleLogin}
+            onPress={() => navigation.navigate('MainApp')}
           >
             <LinearGradient
-              colors={GRADIENTS.secondary as [string, string]}
-              style={styles.gradient}
+              colors={['#FFD700', '#FFA500']}
+              style={styles.buttonGradient}
             >
-              <Text style={styles.buttonText}>LOGIN</Text>
+              <Text style={styles.buttonText}>Login</Text>
             </LinearGradient>
           </TouchableOpacity>
 
-          <TouchableOpacity
-            onPress={() => navigation.navigate('Register')}
+          <TouchableOpacity 
             style={styles.registerButton}
+            onPress={() => navigation.navigate('Register')}
           >
-            <Text style={styles.registerText}>
-              Don't have an account? Sign Up
-            </Text>
+            <Text style={styles.registerText}>Don't have an account? Register</Text>
           </TouchableOpacity>
         </View>
       </LinearGradient>
@@ -93,55 +102,83 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.background,
   },
-  gradientContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 20,
+  headerContainer: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+    paddingTop: Platform.OS === 'ios' ? 50 : 20,
+    paddingHorizontal: 20,
+    paddingBottom: 20,
   },
-  formContainer: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+  backButton: {
+    width: 40,
+    height: 40,
     borderRadius: 20,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.2)',
+  },
+  gradient: {
+    flex: 1,
     padding: 20,
-    ...SHADOWS.light,
+    justifyContent: 'center',
+    paddingTop: Platform.OS === 'ios' ? 90 : 60,
+  },
+  header: {
+    alignItems: 'center',
+    marginBottom: 50,
   },
   title: {
-    fontSize: 32,
+    fontSize: 42,
     fontWeight: 'bold',
-    color: COLORS.white,
-    textAlign: 'center',
+    color: '#FFD700',
     marginBottom: 10,
+    textShadowColor: 'rgba(255, 215, 0, 0.3)',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 4,
   },
   subtitle: {
-    fontSize: 16,
-    color: COLORS.textSecondary,
-    textAlign: 'center',
-    marginBottom: 30,
+    fontSize: 18,
+    color: 'rgba(255, 255, 255, 0.8)',
+    letterSpacing: 1,
+  },
+  form: {
+    width: '100%',
+    maxWidth: 400,
+    alignSelf: 'center',
   },
   inputContainer: {
-    marginBottom: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 215, 0, 0.1)',
+    borderRadius: 12,
+    marginBottom: 16,
+    padding: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.2)',
   },
   input: {
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    padding: 15,
-    borderRadius: 10,
+    flex: 1,
+    color: '#FFD700',
     fontSize: 16,
-    color: COLORS.white,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 255, 255, 0.2)',
+    marginLeft: 12,
   },
   loginButton: {
     marginTop: 20,
-    borderRadius: 10,
     overflow: 'hidden',
+    borderRadius: 12,
   },
-  gradient: {
-    padding: 15,
+  buttonGradient: {
+    paddingVertical: 16,
     alignItems: 'center',
-    borderRadius: 10,
   },
   buttonText: {
-    color: COLORS.white,
-    fontSize: 16,
+    color: COLORS.background,
+    fontSize: 18,
     fontWeight: 'bold',
   },
   registerButton: {
@@ -149,7 +186,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   registerText: {
-    color: COLORS.secondary,
+    color: '#FFD700',
     fontSize: 16,
   },
 });

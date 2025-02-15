@@ -28,6 +28,7 @@ import { debounce } from 'lodash';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { foodApiService } from '../services/foodApiService';
 import { RootStackParamList } from '../navigation/AppNavigator';
+import { BackButton } from '../components/BackButton';
 
 const CATEGORIES = ['RECENT', 'BREAKFAST', 'LUNCH', 'DINNER', 'SNACKS', 'DRINKS'];
 const RECENT_SEARCHES_KEY = 'recent_searches';
@@ -294,6 +295,7 @@ const DietPlannerScreen: React.FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <BackButton />
       <DietPlannerHeader 
         searchQuery={searchQuery}
         onSearchChange={handleSearch}

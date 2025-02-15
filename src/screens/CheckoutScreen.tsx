@@ -11,6 +11,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../styles/theme';
 import { useCart } from '../hooks/useCart';
 import { BlurContainer } from '../components/BlurContainer';
+import { BackButton } from '../components/BackButton';
 
 const GST_RATE = 0.18; // 18% GST
 const DELIVERY_FEE = 40; // Fixed delivery fee
@@ -76,6 +77,13 @@ const CheckoutScreen: React.FC = ({ navigation }: any) => {
 
   return (
     <View style={styles.container}>
+      <BackButton onPress={() => {
+        if (cartItems.length > 0) {
+          navigation.goBack();
+        } else {
+          navigation.navigate('DietPlanner');
+        }
+      }} />
       <ScrollView>
         <BlurContainer style={styles.invoiceContainer}>
           <Text style={styles.title}>Order Summary</Text>

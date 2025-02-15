@@ -16,6 +16,7 @@ import { foodApiService } from '../services/foodApiService';
 import { useCart } from '../hooks/useCart';
 import { BlurContainer } from '../components/BlurContainer';
 import { LAYOUT } from '../constants/layout';
+import { BackButton } from '../components/BackButton';
 
 const FoodDetailsScreen: React.FC = ({ route, navigation }: any) => {
   const { foodId } = route.params;
@@ -87,18 +88,11 @@ const FoodDetailsScreen: React.FC = ({ route, navigation }: any) => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
       >
-        {/* Back Button */}
-        <TouchableOpacity 
-          style={styles.backButton}
-          onPress={() => navigation.goBack()}
-        >
-          <MaterialCommunityIcons name="arrow-left" size={24} color={COLORS.white} />
-        </TouchableOpacity>
-
         <Image 
           source={{ uri: foodDetails.image }} 
           style={styles.image}

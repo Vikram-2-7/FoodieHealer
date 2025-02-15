@@ -15,6 +15,7 @@ import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import type { RootStackParamList } from '../navigation/AppNavigator';
 import { LAYOUT } from '../constants/layout';
+import { BackButton } from '../components/BackButton';
 
 type CartScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'Cart'>;
 
@@ -29,6 +30,7 @@ const CartScreen: React.FC = () => {
   if (cartItems.length === 0) {
     return (
       <View style={styles.container}>
+        <BackButton />
         <View style={styles.emptyContainer}>
           <MaterialCommunityIcons 
             name="cart-off" 
@@ -46,6 +48,7 @@ const CartScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <BackButton />
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
