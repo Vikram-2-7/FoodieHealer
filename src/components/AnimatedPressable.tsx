@@ -49,7 +49,7 @@ export const AnimatedPressable: React.FC<AnimatedPressableProps> = ({
     ]}>
       {gradient ? (
         <LinearGradient
-          colors={gradientColors || GRADIENTS.card}
+          colors={gradientColors as [string, string] || GRADIENTS.card}
           start={{ x: 0, y: 0 }}
           end={{ x: 1, y: 1 }}
           style={styles.gradient}

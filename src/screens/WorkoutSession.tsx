@@ -1,22 +1,15 @@
-import * as React from 'react';
+import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { COLORS } from '../styles/theme';
+import { WorkoutSessionScreenProps } from '../types/navigation';
 
-interface WorkoutSessionProps {
-  route: {
-    params: {
-      workout?: any;
-      activity?: any;
-    };
-  };
-}
+const WorkoutSession = ({ route }: WorkoutSessionScreenProps) => {
+  const { workout, activity } = route.params;
 
-const WorkoutSession: React.FC<WorkoutSessionProps> = ({ route }) => {
-  const { workout, activity } = route.params || {};
   return (
     <View style={styles.container}>
       <Text style={styles.title}>
-        {workout?.title || activity?.title || 'Workout Session'}
+        {workout?.title || activity?.name || 'Workout Session'}
       </Text>
     </View>
   );

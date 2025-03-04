@@ -4,7 +4,6 @@ import {
   Text,
   StyleSheet,
   ScrollView,
-  Image,
   TouchableOpacity,
   ActivityIndicator,
   Alert,
@@ -16,7 +15,7 @@ import { foodApiService } from '../services/foodApiService';
 import { useCart } from '../hooks/useCart';
 import { BlurContainer } from '../components/BlurContainer';
 import { LAYOUT } from '../constants/layout';
-import { BackButton } from '../components/BackButton';
+import { CachedImage } from '../components/CachedImage';
 
 const FoodDetailsScreen: React.FC = ({ route, navigation }: any) => {
   const { foodId } = route.params;
@@ -88,15 +87,11 @@ const FoodDetailsScreen: React.FC = ({ route, navigation }: any) => {
 
   return (
     <View style={styles.container}>
-      <BackButton />
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollViewContent}
       >
-        <Image 
-          source={{ uri: foodDetails.image }} 
-          style={styles.image}
-        />
+        <CachedImage uri={foodDetails.image} style={styles.image} />
         
         <View style={styles.content}>
           <View style={styles.headerContainer}>
@@ -317,16 +312,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollViewContent: {
-    paddingBottom: LAYOUT.TAB_BAR_HEIGHT + 70, // Extra space for the Add to Cart button
+    paddingBottom: LAYOUT.sizes.tabBarHeight + 70,
   },
   bottomButtonContainer: {
     position: 'absolute',
-    bottom: LAYOUT.TAB_BAR_HEIGHT,
+    bottom: LAYOUT.sizes.tabBarHeight,
     left: 0,
     right: 0,
     paddingHorizontal: 20,
-    paddingBottom: 10,
-    backgroundColor: COLORS.background,
   },
   addToCartButton: {
     flexDirection: 'row',

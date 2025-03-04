@@ -16,10 +16,15 @@ export const useFoodData = (initialCategory: string = 'ALL') => {
       setLoading(true);
       setError(null);
       
-      const response = await foodService.getFoodItems({
-        category: currentCategory === 'ALL' ? undefined : currentCategory,
-        search: '',
-      });
+      let response;
+      if (['BREAKFAST', 'LUNCH', 'DINNER'].includes(currentCategory)) {
+        response = await foodService.getFoodItemsByMealTime(currentCategory);
+      } else {
+        response = await foodService.getFoodItems({
+          category: currentCategory === 'ALL' ? undefined : currentCategory,
+          search: '',
+        });
+      }
 
       setFoodItems(prev => refresh ? response.items : [...prev, ...response.items]);
       setHasMore(response.hasMore);

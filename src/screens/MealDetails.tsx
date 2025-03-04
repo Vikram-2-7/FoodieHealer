@@ -10,8 +10,12 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../styles/theme';
 import { NavigationProps } from '../types/navigation';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
 
-const MealDetails = ({ route, navigation }: NavigationProps) => {
+type Props = NativeStackScreenProps<RootStackParamList, 'MealDetails'>;
+
+const MealDetailsScreen: React.FC<Props> = ({ route, navigation }) => {
   const { meal } = route.params;
 
   return (
@@ -77,4 +81,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MealDetails; 
+export default MealDetailsScreen; 

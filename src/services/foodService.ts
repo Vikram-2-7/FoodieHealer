@@ -85,6 +85,34 @@ class FoodService {
       );
     }
   }
+
+  async getFoodItemsByMealTime(mealTime: string): Promise<FoodResponse> {
+    try {
+      // Try API first
+      const response = await foodApiService.getFoodItemsByCategory(mealTime);
+      return {
+        items: response,
+        totalCount: response.length,
+        hasMore: false
+      };
+    } catch (error) {
+      console.error('Error fetching food by meal time:', error);
+      
+      // Fallback to mock data
+      const filteredItems = mockFoodData.items
+        .filter(item => item.category === mealTime)
+        .map(item => ({
+          ...item,
+          category: item.category as FoodItem['category']
+        }));
+
+      return {
+        items: filteredItems,
+        totalCount: filteredItems.length,
+        hasMore: false
+      };
+    }
+  }
 }
 
 export const foodService = new FoodService(); 

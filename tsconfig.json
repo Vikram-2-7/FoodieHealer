@@ -13,18 +13,14 @@
     "moduleResolution": "node",
     "noEmit": true,
     "skipLibCheck": true,
-    "resolveJsonModule": true,
-    "target": "esnext",
-    "types": ["react", "react-native", "node"]
+    "resolveJsonModule": true
   },
   "include": [
-    "src/**/*",
-    "src/types/env.d.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "babel.config.js",
-    "metro.config.js",
-    "jest.config.js"
+    "metro.config.js"
   ]
 }

@@ -13,7 +13,7 @@ import { CartItem } from '../components/CartItem';
 import { BlurContainer } from '../components/BlurContainer';
 import { useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import type { RootStackParamList } from '../navigation/AppNavigator';
+import { RootStackParamList } from '../types/navigation';
 import { LAYOUT } from '../constants/layout';
 import { BackButton } from '../components/BackButton';
 
@@ -117,11 +117,11 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   scrollViewContent: {
-    paddingBottom: LAYOUT.TAB_BAR_HEIGHT + 140,
+    paddingBottom: LAYOUT.sizes.tabBarHeight + 140,
   },
   checkoutContainer: {
     position: 'absolute',
-    bottom: LAYOUT.TAB_BAR_HEIGHT,
+    bottom: LAYOUT.sizes.tabBarHeight,
     left: 0,
     right: 0,
     backgroundColor: 'rgba(255, 255, 255, 0.1)',

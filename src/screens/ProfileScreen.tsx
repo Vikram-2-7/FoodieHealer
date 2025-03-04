@@ -10,14 +10,13 @@ import {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { COLORS, SHADOWS } from '../styles/theme';
 
-const ProfileScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation }: { navigation: any }) => {
   const userStats = {
     workoutsCompleted: 45,
     totalMinutes: 1250,
     caloriesBurned: 12400,
     streakDays: 7,
   };
-
   return (
     <ScrollView style={styles.container}>
       <View style={styles.header}>

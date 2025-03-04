@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import {
   View,
   Text,
@@ -257,9 +257,7 @@ const DashboardScreen = () => {
     }
   };
 
-  const calculateProgress = () => {
-    if (!dailyMeals.breakfast) return 0;
-    
+  const calculateCalorieProgress = () => {
     const totalCalories = 
       (dailyMeals.breakfast?.calories || 0) +
       (dailyMeals.lunch?.calories || 0) +
@@ -376,6 +374,10 @@ const DashboardScreen = () => {
     navigation.navigate('ActivityHistory');
   };
 
+  const handleMealTimePress = (mealTime: 'BREAKFAST' | 'LUNCH' | 'DINNER') => {
+    navigation.navigate('TimeMeals', { mealTime });
+  };
+
   const SearchResultsList = () => {
     if (!showSearch) return null;
 
@@ -457,7 +459,7 @@ const DashboardScreen = () => {
             <View style={styles.greetingContainer}>
               <Text style={styles.greeting}>Welcome Back,</Text>
               <Text style={styles.username}>Vikram</Text>
-            </View>
+          </View>
             <View style={styles.dateContainer}>
               <MaterialCommunityIcons 
                 name="calendar-today" 
@@ -579,70 +581,122 @@ const DashboardScreen = () => {
                 <Text style={styles.workoutDuration}>{plan.duration}</Text>
                 <View style={styles.progressBar}>
                   <View style={[styles.progress, { width: `${plan.progress * 100}%` }]} />
-                </View>
+                    </View>
               </View>
             </TouchableOpacity>
-          ))}
+                  ))}
         </ScrollView>
-      </View>
+                </View>
 
       {/* Daily Meal Suggestions */}
-      <BlurContainer style={styles.suggestedMealsSection}>
-        <View style={styles.sectionHeaderEnhanced}>
+      <View style={styles.suggestedMealsSection}>
+        <View style={styles.sectionHeader}>
           <View>
-            <Text style={styles.sectionTitleLarge}>Suggested Meals</Text>
+            <Text style={styles.sectionTitle}>Suggested Meals</Text>
             <Text style={styles.sectionSubtitle}>Personalized for your goals</Text>
-          </View>
+                </View>
           <MaterialCommunityIcons name="silverware-fork-knife" size={24} color={COLORS.primary} />
-        </View>
-
-        {suggestedMeals.map((mealTime) => (
-          <View key={mealTime.id} style={styles.mealTimeBlock}>
-            <View style={styles.mealTimeHeader}>
-              <View style={styles.mealTimeBadge}>
-                <MaterialCommunityIcons 
-                  name={
-                    mealTime.title === 'Breakfast' ? 'weather-sunny' :
-                    mealTime.title === 'Lunch' ? 'weather-partly-cloudy' :
-                    'weather-night'
-                  } 
-                  size={18} 
-                  color={COLORS.white} 
-                />
-                <Text style={styles.mealTimeTitle}> {mealTime.title}</Text>
-                <Text style={styles.mealTime}> {mealTime.time}</Text>
               </View>
-            </View>
 
-            {mealTime.suggestions.map((meal) => (
-              <TouchableOpacity
-                key={meal.id}
-                style={styles.enhancedMealCard}
-                onPress={() => navigation.navigate('FoodDetails' as const, { foodId: meal.id })}
-              >
-                <Image source={meal.image} style={styles.enhancedMealImage} />
-                <LinearGradient
-                  colors={['transparent', 'rgba(0,0,0,0.8)']}
-                  style={styles.mealGradient}
-                >
-                  <View style={styles.enhancedMealInfo}>
-                    <Text style={styles.enhancedMealName}>{meal.name}</Text>
-                    <View style={styles.mealStats}>
-                      <View style={styles.statItem}>
-                        <MaterialCommunityIcons name="fire" size={16} color={COLORS.primary} />
-                        <Text style={styles.statText}>{meal.calories} cal</Text>
-                      </View>
-                      <TouchableOpacity style={styles.addButton}>
-                        <MaterialCommunityIcons name="plus" size={20} color={COLORS.white} />
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                </LinearGradient>
-              </TouchableOpacity>
-            ))}
+        {/* Breakfast Card */}
+        <TouchableOpacity 
+          style={styles.mealCard}
+          onPress={() => navigation.navigate('MealTimeFoods', { mealTime: 'BREAKFAST' })}
+        >
+          <View style={styles.mealTimeHeader}>
+            <MaterialCommunityIcons name="weather-sunny" size={20} color={COLORS.primary} />
+            <Text style={styles.mealTimeText}>Breakfast</Text>
+            <Text style={styles.mealTimeHour}>8:00 AM</Text>
           </View>
-        ))}
-      </BlurContainer>
+          
+          <View style={styles.mealContent}>
+            <Image 
+              source={require('../assets/images/breakfast.jpg')}
+              style={styles.mealImage}
+            />
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.8)']}
+              style={styles.gradientOverlay}
+            >
+              <View style={styles.mealActions}>
+                <View style={styles.caloriesBadge}>
+                  <MaterialCommunityIcons name="fire" size={16} color={COLORS.primary} />
+                  <Text style={styles.caloriesText}>350 cal</Text>
+                </View>
+                <TouchableOpacity style={styles.addButton}>
+                  <MaterialCommunityIcons name="plus" size={24} color={COLORS.white} />
+            </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
+        </TouchableOpacity>
+
+        {/* Lunch Card */}
+        <TouchableOpacity 
+          style={styles.mealCard}
+          onPress={() => navigation.navigate('MealTimeFoods', { mealTime: 'LUNCH' })}
+        >
+          <View style={styles.mealTimeHeader}>
+            <MaterialCommunityIcons name="weather-partly-cloudy" size={20} color={COLORS.primary} />
+            <Text style={styles.mealTimeText}>Lunch</Text>
+            <Text style={styles.mealTimeHour}>1:00 PM</Text>
+          </View>
+          
+          <View style={styles.mealContent}>
+            <Image 
+              source={require('../assets/images/lunch.jpg')}
+              style={styles.mealImage}
+            />
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.8)']}
+              style={styles.gradientOverlay}
+            >
+              <View style={styles.mealActions}>
+                <View style={styles.caloriesBadge}>
+                  <MaterialCommunityIcons name="fire" size={16} color={COLORS.primary} />
+                  <Text style={styles.caloriesText}>450 cal</Text>
+                </View>
+                <TouchableOpacity style={styles.addButton}>
+                  <MaterialCommunityIcons name="plus" size={24} color={COLORS.white} />
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
+        </TouchableOpacity>
+
+        {/* Dinner Card */}
+        <TouchableOpacity 
+          style={styles.mealCard}
+          onPress={() => navigation.navigate('MealTimeFoods', { mealTime: 'DINNER' })}
+        >
+          <View style={styles.mealTimeHeader}>
+            <MaterialCommunityIcons name="weather-night" size={20} color={COLORS.primary} />
+            <Text style={styles.mealTimeText}>Dinner</Text>
+            <Text style={styles.mealTimeHour}>7:00 PM</Text>
+          </View>
+          
+          <View style={styles.mealContent}>
+            <Image 
+              source={require('../assets/images/dinner.jpg')}
+              style={styles.mealImage}
+            />
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.8)']}
+              style={styles.gradientOverlay}
+            >
+              <View style={styles.mealActions}>
+                <View style={styles.caloriesBadge}>
+                  <MaterialCommunityIcons name="fire" size={16} color={COLORS.primary} />
+                  <Text style={styles.caloriesText}>550 cal</Text>
+                </View>
+                <TouchableOpacity style={styles.addButton}>
+                  <MaterialCommunityIcons name="plus" size={24} color={COLORS.white} />
+                </TouchableOpacity>
+              </View>
+            </LinearGradient>
+          </View>
+        </TouchableOpacity>
+      </View>
 
       {/* Recent Activity Section - New */}
       <View style={styles.section}>
@@ -683,7 +737,7 @@ const DashboardScreen = () => {
           <View>
             <Text style={styles.sectionTitleLarge}>Today's Meal Plan</Text>
             <Text style={styles.sectionSubtitle}>Track your daily nutrition</Text>
-          </View>
+        </View>
           <View style={styles.totalCalories}>
             <Text style={styles.caloriesText}>1800</Text>
             <Text style={styles.caloriesLabel}>cal left</Text>
@@ -702,7 +756,7 @@ const DashboardScreen = () => {
             "4:30 PM",
             "7:00 PM"
           ].map((time) => (
-            <MealTimeIndicator
+            <TimeIndicator
               key={time}
               time={time}
               isActive={activeTime === time}
@@ -710,6 +764,14 @@ const DashboardScreen = () => {
             />
           ))}
         </ScrollView>
+              <Image
+            source={dailyMeals.breakfast?.image}
+            style={styles.standardMealImage}
+          />
+          <View style={styles.standardMealInfo}>
+            {/* content */}
+                </View>
+        
 
         <MealCard
           title="Breakfast"
@@ -754,7 +816,7 @@ const DashboardScreen = () => {
           />
         ))}
       </BlurContainer>
-    </ScrollView>
+        </ScrollView>
   );
 };
 
@@ -772,43 +834,61 @@ const NutritionCard = ({ title, current, target, unit, icon }: any) => (
           { width: `${(current / target) * 100}%` }
         ]} 
       />
-    </View>
+      </View>
   </View>
 );
 
-const MealTimeIndicator: React.FC<{ 
-  time: string; 
+const TimeIndicator = ({ 
+  time, 
+  isActive, 
+  onPress 
+}: {
+  time: string;
   isActive: boolean;
   onPress: () => void;
-}> = ({ time, isActive, onPress }) => {
-  const scaleAnim = React.useRef(new Animated.Value(isActive ? 1 : 0.8)).current;
-  
-  React.useEffect(() => {
-    Animated.spring(scaleAnim, {
-      toValue: isActive ? 1 : 0.8,
-      tension: 20,
-      friction: 3,
-      useNativeDriver: true,
-    }).start();
+}) => {
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  useEffect(() => {
+    if (isActive) {
+      Animated.spring(scaleAnim, {
+        toValue: 1.1,
+        tension: 40,
+        friction: 3,
+        useNativeDriver: true
+      }).start();
+    } else {
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 40,
+        friction: 3,
+        useNativeDriver: true
+      }).start();
+    }
   }, [isActive]);
 
   return (
-    <TouchableOpacity onPress={onPress} activeOpacity={0.7}>
+    <TouchableOpacity onPress={onPress}>
       <Animated.View 
         style={[
-          styles.timeIndicator,
-          isActive && styles.activeTimeIndicator,
+          styles.timeIndicatorContainer,
+          isActive && styles.activeTimeIndicatorContainer,
           { transform: [{ scale: scaleAnim }] }
         ]}
       >
         <MaterialCommunityIcons
-          name={isActive ? 'clock-check' : 'clock-outline'}
-          size={16}
-          color={isActive ? '#FFD700' : COLORS.textSecondary}
+          name={isActive ? "clock-check" : "clock-outline"}
+          size={24}
+          color={isActive ? COLORS.primary : COLORS.textSecondary}
         />
-        <Text style={[styles.timeText, isActive && styles.activeTimeText]}>{time}</Text>
+        <Text style={[
+          styles.timeIndicatorText,
+          isActive && styles.activeTimeIndicatorText
+        ]}>
+          {time}
+        </Text>
       </Animated.View>
-    </TouchableOpacity>
+          </TouchableOpacity>
   );
 };
 
@@ -840,14 +920,14 @@ const MealCard: React.FC<{
   };
 
   return (
-    <TouchableOpacity
+          <TouchableOpacity 
       onPress={onPress}
       onPressIn={handlePressIn}
       onPressOut={handlePressOut}
       activeOpacity={0.9}
     >
       <Animated.View style={[
-        styles.mealCardContainer,
+        styles.planMealCard,
         { transform: [{ scale: scaleAnim }] }
       ]}>
         <LinearGradient
@@ -860,18 +940,18 @@ const MealCard: React.FC<{
         >
           {meal ? (
             <>
-              <Image 
+            <Image
                 source={{ uri: meal.image }} 
-                style={styles.mealImage}
+                style={styles.planMealImage}
               />
-              <View style={styles.mealContent}>
+              <View style={styles.planMealInfo}>
                 <View style={styles.mealHeader}>
-                  <Text style={styles.mealTitle}>{title}</Text>
+                  <Text style={styles.title}>{title}</Text>
                   <View style={styles.timeChip}>
                     <MaterialCommunityIcons name={icon as any} size={14} color={COLORS.primary} />
                     <Text style={styles.timeText}>{time}</Text>
-                  </View>
-                </View>
+            </View>
+      </View>
                 <Text style={styles.mealName}>{meal.name}</Text>
                 <View style={styles.mealStats}>
                   <View style={styles.statItem}>
@@ -1079,37 +1159,68 @@ const styles = StyleSheet.create({
     borderRadius: 2,
   },
   mealCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  mealTimeHeader: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 15,
-    padding: 10,
-    marginBottom: 10,
-    ...SHADOWS.light,
+    padding: 12,
   },
-  mealImage: {
-    width: 70,
-    height: 70,
-    borderRadius: 10,
-  },
-  mealInfo: {
-    flex: 1,
-    marginLeft: 15,
-  },
-  mealTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
+  mealTimeText: {
     color: COLORS.white,
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
   },
-  mealTime: {
-    fontSize: 14,
+  mealTimeHour: {
     color: COLORS.textSecondary,
-    marginTop: 2,
-  },
-  mealCalories: {
     fontSize: 14,
-    color: COLORS.secondary,
-    marginTop: 2,
+    marginLeft: 8,
+  },
+  mealContent: {
+    width: '100%',
+    height: 100,
+    position: 'relative',
+  },
+  gradientOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    top: 0,
+    justifyContent: 'flex-end',
+    padding: 16,
+  },
+  mealActions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-end',
+  },
+  caloriesBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  caloriesText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   difficultyContainer: {
     flexDirection: 'row',
@@ -1280,162 +1391,103 @@ const styles = StyleSheet.create({
     color: COLORS.white,
     fontSize: 16,
     fontWeight: 'bold',
-    marginTop: 4,
+    marginTop: 4
   },
-  mealCard: {
+  mealCardContainer: {
     marginBottom: 16,
-    padding: 16,
-    borderRadius: 12,
-  },
-  mealTimeHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  mealTimeTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: COLORS.white,
-  },
-  suggestionCard: {
-    flexDirection: 'row',
-    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginBottom: 8,
-  },
-  mealImage: {
-    width: 80,
-    height: 80,
-  },
-  mealInfo: {
-    flex: 1,
-    padding: 12,
-  },
-  mealDescription: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
-    marginTop: 4,
-  },
-  suggestedMealsSection: {
-    margin: 16,
-    padding: 16,
-    borderRadius: 20,
-  },
-  sectionHeaderEnhanced: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  sectionTitleLarge: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: COLORS.white,
-  },
-  sectionSubtitle: {
-    color: COLORS.textSecondary,
-    fontSize: 14,
-    marginTop: 4,
-  },
-  mealTimeBlock: {
-    marginBottom: 24,
-  },
-  mealTimeBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: COLORS.primary + '20',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 20,
-    marginBottom: 12,
-  },
-  enhancedMealCard: {
-    height: 200,
     borderRadius: 16,
     overflow: 'hidden',
-    marginBottom: 16,
-  },
-  enhancedMealImage: {
-    width: '100%',
-    height: '100%',
-  },
-  mealGradient: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    height: '50%',
-    padding: 16,
-    justifyContent: 'flex-end',
-  },
-  enhancedMealInfo: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'flex-end',
-  },
-  enhancedMealName: {
-    color: COLORS.white,
-    fontSize: 20,
-    fontWeight: 'bold',
-    flex: 1,
-  },
-  mealStats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-  },
-  statItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'rgba(255, 215, 0, 0.1)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginRight: 8,
-  },
-  statText: {
-    color: '#FFD700',
-    fontSize: 12,
-    marginLeft: 4,
-  },
-  addButton: {
-    backgroundColor: COLORS.primary,
-    padding: 8,
-    borderRadius: 20,
-  },
-  timeIndicator: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
-    marginRight: 12,
     borderWidth: 1,
     borderColor: 'rgba(255, 215, 0, 0.1)',
   },
-  activeTimeIndicator: {
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    borderColor: '#FFD700',
+  mealCardGradient: {
+    flexDirection: 'row',
+    borderRadius: 16,
+    padding: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)',
   },
-  timeText: {
+  planMealCard: {
+    marginBottom: 16,
+    borderRadius: 16,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.1)',
+  },
+  planMealImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 8,
+  },
+  planMealInfo: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  mealHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 4,
+  },
+  timeChip: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.2)',
+  },
+  emptyMealContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 20,
+    backgroundColor: 'rgba(255, 215, 0, 0.05)',
+  },
+  emptyMealText: {
+    color: '#FFD700',
+    fontSize: 16,
+    fontWeight: '600',
+    marginTop: 8,
+  },
+  emptyMealSubtext: {
+    color: COLORS.textSecondary,
+    fontSize: 12,
+    marginTop: 4,
+  },
+  mealTimeCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 12,
+    padding: 16,
+    marginBottom: 12,
+  },
+  mealTimeInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  mealTimeTitle: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  mealTimeHour: {
     color: COLORS.textSecondary,
     fontSize: 14,
     marginLeft: 8,
   },
-  activeTimeText: {
-    color: '#FFD700',
-    fontWeight: '600',
-  },
-  totalCalories: {
+  mealTimeDetails: {
+    flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    padding: 8,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.2)',
+    justifyContent: 'space-between',
+  },
+  caloriesBadge: {
+    backgroundColor: 'rgba(255, 215, 0, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
   },
   caloriesText: {
     color: '#FFD700',
@@ -1444,6 +1496,14 @@ const styles = StyleSheet.create({
     textShadowColor: 'rgba(0, 0, 0, 0.5)',
     textShadowOffset: { width: 0, height: 1 },
     textShadowRadius: 2,
+  },
+  totalCalories: {
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    padding: 8,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.2)',
   },
   caloriesLabel: {
     color: COLORS.textSecondary,
@@ -1513,6 +1573,7 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 16,
     borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
   },
   standardMealImage: {
     width: 80,
@@ -1522,57 +1583,276 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 12,
   },
-  mealCardContainer: {
+  mealCard: {
     marginBottom: 16,
-    borderRadius: 16,
-    overflow: 'hidden',
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.1)',
+    padding: 16,
+    borderRadius: 12,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)'
   },
-  mealCardGradient: {
+  mealTimeHeader: {
     flexDirection: 'row',
-    borderRadius: 16,
+    alignItems: 'center',
     padding: 12,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)',
+  },
+  mealTimeText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  mealTimeHour: {
+    color: COLORS.textSecondary,
+    fontSize: 14,
+    marginLeft: 8,
   },
   mealContent: {
-    flex: 1,
-    marginLeft: 12,
+    width: '100%',
+    height: 160,
+    position: 'relative',
   },
-  mealHeader: {
+  mealImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  mealName: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    color: COLORS.white,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  mealActions: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  caloriesBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  caloriesText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  suggestedMealsSection: {
+    padding: 16,
+  },
+  sectionHeaderEnhanced: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 4,
+    marginBottom: 20,
   },
-  timeChip: {
+  sectionTitleLarge: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: COLORS.white,
+  },
+  sectionSubtitle: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+  },
+  mealCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    borderRadius: 16,
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  mealTimeHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+  },
+  mealTimeText: {
+    color: COLORS.white,
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  mealTimeHour: {
+    color: COLORS.textSecondary,
+    fontSize: 14,
+    marginLeft: 8,
+  },
+  mealContent: {
+    width: '100%',
+    height: 160,
+    position: 'relative',
+  },
+  mealImage: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  mealName: {
+    position: 'absolute',
+    bottom: 16,
+    left: 16,
+    color: COLORS.white,
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  mealActions: {
+    position: 'absolute',
+    bottom: 16,
+    right: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  caloriesBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginRight: 12,
+  },
+  caloriesText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 4,
+  },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  timeIndicatorContainer: {
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: 12,
+    marginHorizontal: 8,
+    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.05)',
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.1)',
+    minWidth: 80,
+  },
+  activeTimeIndicatorContainer: {
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    borderColor: 'rgba(255, 215, 0, 0.3)',
+    shadowColor: COLORS.primary,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  timeIndicatorText: {
+    fontSize: 14,
+    color: COLORS.textSecondary,
+    marginTop: 4,
+    fontWeight: '600',
+  },
+  activeTimeIndicatorText: {
+    color: COLORS.primary,
+    fontWeight: 'bold',
+  },
+  mealPlanCard: {
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    borderRadius: 16,
+    padding: 16,
+    marginTop: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(255, 215, 0, 0.1)',
+  },
+  mealPlanHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  mealPlanTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    flex: 1,
+  },
+  mealTimeChip: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'rgba(255, 215, 0, 0.15)',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: 'rgba(255, 215, 0, 0.2)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
   },
-  emptyMealContent: {
-    flex: 1,
+  mealTimeText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 4,
+  },
+  mealImage: {
+    width: '100%',
+    height: 160,
+    borderRadius: 12,
+    marginBottom: 12,
+  },
+  mealName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: COLORS.white,
+    marginBottom: 8,
+  },
+  mealStats: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  statItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+  },
+  statText: {
+    color: COLORS.primary,
+    fontSize: 14,
+    fontWeight: '500',
+    marginLeft: 6,
+  },
+  addMealButton: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    padding: 20,
-    backgroundColor: 'rgba(255, 215, 0, 0.05)',
+    backgroundColor: 'rgba(255, 215, 0, 0.15)',
+    padding: 16,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: 'rgba(255, 215, 0, 0.3)',
+    borderStyle: 'dashed',
   },
-  emptyMealText: {
-    color: '#FFD700',
+  addMealText: {
+    color: COLORS.primary,
     fontSize: 16,
-    fontWeight: '600',
-    marginTop: 8,
-  },
-  emptyMealSubtext: {
-    color: COLORS.textSecondary,
-    fontSize: 12,
-    marginTop: 4,
-  },
+    fontWeight: 'bold',
+    marginLeft: 8,
+  }
 });
 
 export default DashboardScreen;

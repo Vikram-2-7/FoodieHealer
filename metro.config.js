@@ -1,16 +1,20 @@
-const { getDefaultConfig } = require('expo/metro-config');
+const { getDefaultConfig } = require('@expo/metro-config');
+const path = require('path');
 
-const config = getDefaultConfig(__dirname);
+const defaultConfig = getDefaultConfig(__dirname);
 
 module.exports = {
-  ...config,
+  ...defaultConfig,
   resolver: {
-    ...config.resolver,
-    sourceExts: [...config.resolver.sourceExts, 'mjs', 'cjs'],
+    ...defaultConfig.resolver,
+    sourceExts: [...defaultConfig.resolver.sourceExts, 'mjs', 'cjs'],
+    assetExts: [...defaultConfig.resolver.assetExts, 'bin', 'db', 'sqlite'],
   },
   server: {
-    middleware: (middleware) => {
+    port: 8081,
+    enhanceMiddleware: (middleware) => {
       return (req, res, next) => {
+        // Ensure correct content type for bundles
         if (req.url.endsWith('.bundle')) {
           res.setHeader('Content-Type', 'application/javascript');
         }

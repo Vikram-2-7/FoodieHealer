@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -27,8 +27,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { debounce } from 'lodash';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { foodApiService } from '../services/foodApiService';
-import { RootStackParamList } from '../navigation/AppNavigator';
+import { RootStackParamList } from '../types/navigation';
 import { BackButton } from '../components/BackButton';
+import { responsive } from '../utils/dimensions';
+import { LAYOUT } from '../constants/layout';
 
 const CATEGORIES = ['RECENT', 'BREAKFAST', 'LUNCH', 'DINNER', 'SNACKS', 'DRINKS'];
 const RECENT_SEARCHES_KEY = 'recent_searches';
@@ -293,6 +295,20 @@ const DietPlannerScreen: React.FC = () => {
     );
   }, [showSuggestions]);
 
+  const preloadImages = (items: FoodItem[]) => {
+    items.forEach(item => {
+      if (item.image) {
+        Image.prefetch(item.image);
+      }
+    });
+  };
+
+  useEffect(() => {
+    if (foodItems.length > 0) {
+      preloadImages(foodItems);
+    }
+  }, [foodItems]);
+
   return (
     <SafeAreaView style={styles.container}>
       <BackButton />
@@ -338,6 +354,19 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.background,
+    paddingTop: LAYOUT.safeArea.top,
+    paddingBottom: LAYOUT.sizes.tabBarHeight || 0,
+  },
+  header: {
+    height: LAYOUT.sizes.headerHeight,
+    paddingHorizontal: LAYOUT.spacing.m,
+  },
+  listContainer: {
+    paddingHorizontal: LAYOUT.spacing.m,
+  },
+  gridItem: {
+    width: (LAYOUT.window.width - LAYOUT.spacing.m * 3) / 2,
+    marginBottom: LAYOUT.spacing.m,
   },
   categoriesContainer: {
     paddingVertical: 10,
@@ -362,9 +391,6 @@ const styles = StyleSheet.create({
   },
   categoryTextActive: {
     color: COLORS.white,
-  },
-  listContainer: {
-    paddingTop: 16,
   },
   foodCard: {
     backgroundColor: 'rgba(255, 255, 255, 0.1)',

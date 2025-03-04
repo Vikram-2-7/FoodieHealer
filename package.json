@@ -16,7 +16,11 @@
     "web-build-and-run-and-open-dev": "expo build --web --dev && expo start --web --dev && expo open --web --dev",
     "web-build-and-run-and-open-prod": "expo build --web --prod && expo start --web --prod && expo open --web --prod",
     "web-build-and-run-and-open-and-open-dev": "expo build --web --dev && expo start --web --dev && expo open --web --dev",
-    "web-build-and-run-and-open-and-open-prod": "expo build --web --prod && expo start --web --prod && expo open --web --prod"
+    "web-build-and-run-and-open-and-open-prod": "expo build --web --prod && expo start --web --prod && expo open --web --prod",
+    "clear": "expo start -c",
+    "serve": "node server.js",
+    "clear-cache": "rm -rf node_modules/.cache/babel-loader/*",
+    "reset": "rm -rf node_modules && npm install && npm run clear-cache && expo start -c"
   },
   "dependencies": {
     "@expo/metro-runtime": "~4.0.1",
@@ -57,7 +61,9 @@
     "@types/react": "~18.3.12",
     "@types/react-native": "^0.72.8",
     "babel-plugin-module-resolver": "^5.0.0",
-    "metro-react-native-babel-preset": "^0.77.0",
-    "typescript": "^5.3.0"
+    "metro-react-native-babel-transformer": "^0.77.0",
+    "typescript": "^5.3.0",
+    "express": "^4.17.1",
+    "http-proxy-middleware": "^2.0.6"
   }
 }

@@ -23,32 +23,12 @@ import CheckoutScreen from '../screens/CheckoutScreen';
 import SearchScreen from '../screens/SearchScreen';
 import FoodCategoryScreen from '../screens/FoodCategoryScreen';
 import FoodDetailsScreen from '../screens/FoodDetailsScreen';
+import TimeMealsScreen from '../screens/TimeMealsScreen';
+import MealTimeFoodsScreen from '../screens/MealTimeFoodsScreen';
+import WorkoutPlanScreen from '../screens/WorkoutPlanScreen';
 import { COLORS } from '../styles/theme';
-
-export type RootStackParamList = {
-  Login: undefined;
-  Register: undefined;
-  UserDetails: undefined;
-  MainApp: undefined;
-  Profile: undefined;
-  Dashboard: undefined;
-  DietPlanner: undefined;
-  Workout: undefined;
-  Cart: undefined;
-  Settings: undefined;
-  WorkoutDetails: { workout: any };
-  MealDetails: { meal: any };
-  WorkoutSession: { workout?: any; activity?: any };
-  AllWorkouts: undefined;
-  AllMeals: undefined;
-  ActivityHistory: undefined;
-  NutritionGoals: undefined;
-  MealSuggestions: undefined;
-  Checkout: undefined;
-  Search: undefined;
-  FoodCategory: { category: any };
-  FoodDetails: { foodId: string };
-};
+import { RootStackParamList } from '../types/navigation';
+import { IconNames } from '../types/navigation';
 
 type TabParamList = {
   DashboardTab: undefined;
@@ -79,7 +59,8 @@ const MainTabNavigator = () => {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
+          let iconName: IconNames = 'circle';
+          
           switch (route.name) {
             case 'DashboardTab':
               iconName = 'view-dashboard';
@@ -96,9 +77,8 @@ const MainTabNavigator = () => {
             case 'SettingsTab':
               iconName = 'cog';
               break;
-            default:
-              iconName = 'circle';
           }
+          
           return <MaterialCommunityIcons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: COLORS.primary,
@@ -154,12 +134,30 @@ const DashboardStackNavigator = () => (
     <Stack.Screen name="FoodDetails" component={FoodDetailsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="WorkoutDetails" component={WorkoutDetailsScreen} />
-    <Stack.Screen name="WorkoutSession" component={WorkoutSessionScreen} />
+    <Stack.Screen 
+      name="MealDetails" 
+      component={MealDetailsScreen}
+      options={({ route }) => ({
+        headerShown: true
+      })}
+    />
+    <Stack.Screen 
+      name="WorkoutSession" 
+      component={WorkoutSessionScreen}
+    />
     <Stack.Screen name="AllWorkouts" component={AllWorkoutsScreen} />
     <Stack.Screen name="AllMeals" component={AllMealsScreen} />
     <Stack.Screen name="ActivityHistory" component={ActivityHistoryScreen} />
     <Stack.Screen name="NutritionGoals" component={NutritionGoalsScreen} />
     <Stack.Screen name="MealSuggestions" component={MealSuggestionsScreen} />
+    <Stack.Screen 
+      name="TimeMeals" 
+      component={TimeMealsScreen}
+    />
+    <Stack.Screen 
+      name="MealTimeFoods" 
+      component={MealTimeFoodsScreen}
+    />
   </Stack.Navigator>
 );
 
@@ -176,9 +174,13 @@ const DietPlannerStackNavigator = () => (
 
 const WorkoutStackNavigator = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
-    <Stack.Screen name="Workout" component={WorkoutScreen} />
+    <Stack.Screen name="WorkoutMain" component={WorkoutScreen} />
+    <Stack.Screen name="WorkoutPlan" component={WorkoutPlanScreen} />
     <Stack.Screen name="WorkoutDetails" component={WorkoutDetailsScreen} />
-    <Stack.Screen name="WorkoutSession" component={WorkoutSessionScreen} />
+    <Stack.Screen 
+      name="WorkoutSession" 
+      component={WorkoutSessionScreen}
+    />
   </Stack.Navigator>
 );
 

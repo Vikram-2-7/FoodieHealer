@@ -17,6 +17,8 @@ export const COLORS = {
 };
 
 export const GRADIENTS = {
+  background: ['#1A1A1A', '#000000'],
+  primary: ['#FF6B6B', '#FF8E53'],
   primary: [
     'rgba(0, 0, 0, 0.9)',
     'rgba(25, 25, 25, 1)',
